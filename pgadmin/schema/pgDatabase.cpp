@@ -1106,6 +1106,59 @@ bool pgDatabase::CanDebugEdbspl()
 	return true;
 }
 
+bool pgDatabase::CanDebugPltsql()
+{
+	wxString preload_option;
+
+	// Result cache - 0 = not tested, 1 = false, 2 = true.
+	if (canDebugPltsql == 1)
+		return false;
+	else if (canDebugPltsql == 2)
+		return true;
+
+	// "show shared_preload_libraries" does not work for other than
+	// the super users.
+	if (GetServer()->GetSuperUser())
+	{
+		// Parameter's name depends of the backend's version
+		if (server->GetConnection()->BackendMinimumVersion(8, 2))
+		{
+			preload_option = wxT("shared_preload_libraries");
+		}
+		else
+		{
+			preload_option = wxT("preload_libraries");
+		}
+
+		// Check the appropriate plugin is loaded
+		if (!ExecuteScalar(wxT("SHOW ") + preload_option).Contains(wxT("plugin_tsql_debugger")))
+		{
+			canDebugPltsql = 1;
+			return false;
+		}
+	}
+
+	if (ExecuteScalar(wxT("SELECT count(*) FROM pg_proc WHERE proname = 'pldbg_get_target_info';")) == wxT("0"))
+	{
+		canDebugPltsql = 1;
+		return false;
+	}
+
+	// We need to check to make sure that the debugger library is also available.
+	if (ExecuteScalar(wxT("SELECT count(*) FROM pg_proc WHERE proname = 'pltsql_oid_debug';")) == wxT("0"))
+	{
+		canDebugPltsql = 1;
+		return false;
+	}
+	else
+	{
+		canDebugPltsql = 2;
+		return true;
+	}
+
+	return true;
+}
+
 pgDatabaseCollection::pgDatabaseCollection(pgaFactory *factory, pgServer *sv)
 	: pgServerObjCollection(factory, sv)
 {

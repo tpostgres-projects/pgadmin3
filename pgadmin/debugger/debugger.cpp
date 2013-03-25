@@ -134,6 +134,8 @@ bool debuggerFactory::CheckEnable(pgObject *obj)
 				{
 					if (func->GetLanguage() == wxT("plpgsql") && obj->GetDatabase()->CanDebugPlpgsql())
 						return true;
+					if (func->GetLanguage() == wxT("pltsql") && obj->GetDatabase()->CanDebugPltsql())
+						return true;
 #ifndef EDB_LIBPQ
 #ifdef __WXMSW__
 					else if (func->GetLanguage() == wxT("edbspl") &&
@@ -271,6 +273,8 @@ bool breakpointFactory::CheckEnable(pgObject *obj)
 
 				if (func->GetLanguage() == wxT("plpgsql") && obj->GetDatabase()->CanDebugPlpgsql())
 					return true;
+				else if (func->GetLanguage() == wxT("pltsql") && obj->GetDatabase()->CanDebugPltsql())
+					return true;
 #ifndef EDB_LIBPQ
 #ifdef __WXMSW__
 				else if (func->GetLanguage() == wxT("edbspl") &&
@@ -307,6 +311,8 @@ bool breakpointFactory::CheckEnable(pgObject *obj)
 					return false;
 
 				if (trig->GetLanguage() == wxT("plpgsql") && obj->GetDatabase()->CanDebugPlpgsql())
+					return true;
+				else if (trig->GetLanguage() == wxT("pltsql") && obj->GetDatabase()->CanDebugPltsql())
 					return true;
 				else if (trig->GetLanguage() == wxT("edbspl") && obj->GetDatabase()->CanDebugEdbspl())
 					return true;

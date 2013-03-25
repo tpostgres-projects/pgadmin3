@@ -263,6 +263,7 @@ public:
 
 	bool CanDebugPlpgsql();
 	bool CanDebugEdbspl();
+	bool CanDebugPltsql();
 
 private:
 	pgConn *conn;
@@ -279,7 +280,7 @@ private:
 	wxString schemaRestriction;
 	wxString m_defPrivsOnTables, m_defPrivsOnSeqs, m_defPrivsOnFuncs, m_defPrivsOnTypes;
 
-	int canDebugPlpgsql, canDebugEdbspl;
+	int canDebugPlpgsql, canDebugEdbspl, canDebugPltsql;
 
 	OID tablespaceOid;
 };

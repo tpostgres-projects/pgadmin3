@@ -522,6 +522,8 @@ void dlgDirectDbg::setBreakpoint(long pkgOid, long funcOid)
 	{
 		if( m_targetInfo->getLanguage() == wxT( "edbspl" ))
 			result = new dbgResultset(m_conn->waitForCommand(wxString::Format(wxT("select edb_oid_debug( %ld, %ld );"), pkgOid, funcOid)));
+		else if( m_targetInfo->getLanguage() == wxT( "pltsql" ))
+			result = new dbgResultset(m_conn->waitForCommand(wxString::Format(wxT("select pltsql_oid_debug( %ld, %ld );"), pkgOid, funcOid)));
 		else
 			result = new dbgResultset(m_conn->waitForCommand(wxString::Format(wxT("select plpgsql_oid_debug( %ld, %ld );"),  pkgOid, funcOid)));
 	}
@@ -529,6 +531,8 @@ void dlgDirectDbg::setBreakpoint(long pkgOid, long funcOid)
 	{
 		if( m_targetInfo->getLanguage() == wxT( "edbspl" ))
 			result = new dbgResultset(m_conn->waitForCommand(wxString::Format(wxT("select edb_oid_debug(%ld);"), funcOid)));
+		else if( m_targetInfo->getLanguage() == wxT( "pltsql" ))
+			result = new dbgResultset(m_conn->waitForCommand(wxString::Format(wxT("select pltsql_oid_debug(%ld);"), funcOid)));
 		else
 			result = new dbgResultset(m_conn->waitForCommand(wxString::Format(wxT("select plpgsql_oid_debug(%ld);"), funcOid)));
 	}
